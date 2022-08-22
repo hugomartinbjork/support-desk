@@ -13,7 +13,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // Validation
   if (!name || !email || !password) {
     res.status(400)
-    throw new Error('Please include all fields')
+    throw new Error('Please include all fields!')
   }
   // Find if user already exist
   const userExists = await User.findOne({ email })
