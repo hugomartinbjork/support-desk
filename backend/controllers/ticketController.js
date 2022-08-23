@@ -77,8 +77,10 @@ const deleteTicket = asyncHandler(async (req, res) => {
 // @access Private
 const createTicket = asyncHandler(async (req, res) => {
   const { product, description } = req.body
+  console.log(req.body)
 
   if (!product || !description) {
+    console.log(2134234214)
     res.status(400)
     throw new Error('Please add a product and description')
   }
