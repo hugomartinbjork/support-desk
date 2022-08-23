@@ -1,23 +1,75 @@
 const asyncHandler = require('express-async-handler')
 
-const User = require('../models/userModel')
 const Ticket = require('../models/ticketModel')
 
 // @desc   GET USER TICKETS
 // @route  GET /api/tickets
 // @access Private
 const getTickets = asyncHandler(async (req, res) => {
-  // Get user using the id in the jwt
-  const user = await User.findById(req.user.id)
+  const tickets = await Ticket.find({ user: req.user.id })
+  res.status(200).json(tickets)
+})
 
-  if (!user) {
-    res.status(401)
-    throw new Error('User not found')
+// @desc   update ticket
+// @route  PUT /api/tickets/:id
+// @access Private
+const getTicket = asyncHandler(async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id)
+  if (!ticket) {
+    res.status(404)
+    throw new Error('Ticket not found')
   }
 
-  const tickets = await Ticket.find({ user: req.user.id })
+  if (ticket.user.toString() !== req.user.id) {
+    console.log(ticket.user.id)
+    res.status(401)
+    throw new Error('Not Authorized')
+  }
 
-  res.status(200).json(tickets)
+  res.status(200).json(ticket)
+})
+
+const updateTicket = asyncHandler(async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id)
+  if (!ticket) {
+    res.status(404)
+    throw new Error('Ticket not found')
+  }
+
+  if (ticket.user.toString() !== req.user.id) {
+    console.log(ticket.user.id)
+    res.status(401)
+    throw new Error('Not Authorized')
+  }
+
+  const updatedTicket = await Ticket.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+    }
+  )
+
+  res.status(200).json(updatedTicket)
+})
+
+// @desc   DELETE TICKET
+// @route  DELETE /api/tickets/:id
+// @access Private
+const deleteTicket = asyncHandler(async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id)
+  if (!ticket) {
+    res.status(404)
+    throw new Error('Ticket not found')
+  }
+
+  if (ticket.user.toString() !== req.user.id) {
+    console.log(ticket.user.id)
+    res.status(401)
+    throw new Error('Not Authorized')
+  }
+  await ticket.delete()
+  res.status(200).json({ success: true })
 })
 
 // @desc   CREATE NEW TICKET
@@ -43,4 +95,7 @@ const createTicket = asyncHandler(async (req, res) => {
 module.exports = {
   getTickets,
   createTicket,
+  getTicket,
+  deleteTicket,
+  updateTicket,
 }
