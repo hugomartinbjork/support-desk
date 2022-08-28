@@ -12,11 +12,11 @@ const NoteItem = ({ note }) => {
     >
       <h4>
         Note from <span>{note.isStaff ? 'Staff' : user.name} </span>
-        <p>{note.text}</p>
-        <div className="note-date">
-          {new Date(note.createdAt).toLocaleString('en-US')}
-        </div>
       </h4>
+      <p>{note.text}</p>
+      <div className="note-date">
+        {new Date(note.createdAt).toLocaleString('en-US')}
+      </div>
     </div>
   )
 }
